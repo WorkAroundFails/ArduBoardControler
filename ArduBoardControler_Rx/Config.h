@@ -35,25 +35,17 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
  
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
-//**for Mega2560
-#ifdef __AVR_ATmega2560__
-
 //Pin definition
 
 #define CEPIN	9
 #define CSPIN	10
 
+//**Redundent code because it is in VescUart.h
 //Definition of Serial ports
-#define SERIALIO Serial1
-#define DEBUGSERIAL Serial
+//#define SERIALIO Serial1
+//#define DEBUGSERIAL Serial
 
 
-
-#endif
-
-//**for Arduino Nano
-
-#ifdef ARDUINO_AVR_NANO
 
 //Pin definition
 
@@ -75,10 +67,6 @@ GND		>	GND			(white wire)
 TX		>	RX			(orange wire)
 RX		>	TX			(green wire)
 */
-//Definition of Serial ports
-#define SERIALIO Serial
-#define DEBUGSERIAL Serial
-#endif
 
 //Settings for Nunchuk control
 
