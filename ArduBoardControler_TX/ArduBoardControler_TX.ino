@@ -56,6 +56,11 @@ Adafruit_NeoPixel Led = Adafruit_NeoPixel(NUM2812, LED_PIN, NEO_GRB + NEO_KHZ800
 // Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 
 RF24 radio(CEPIN,CSPIN);
+//Use Buttons for speed
+bool useBTN = true;
+int BTN = 127;
+int buttonState4 =0;
+int buttonState5 = 0;
 
 //Setup OLED display
 
@@ -76,6 +81,7 @@ long failedCounter = 0;
 boolean sendOK = false;
 boolean recOK = false;
 int averageCycles = 2;
+
 
 enum Display
 {
@@ -124,7 +130,10 @@ void DrawScreenSingleValue(float value, char digits[3]);
 void setup()
 {	
 
-	
+//Setup button controls
+pinMode(4, INPUT);//slow
+pinMode(5, INPUT);//speed
+
 
 	//Led class is started and brightness is defined
 #ifdef STATUS_LED_USED
@@ -189,6 +198,21 @@ void setup()
 
 void loop()
 {
+	//cal speed if using buttons
+	if (useBTN)
+	{
+		buttonState4 = digitalRead(4);
+		buttonState5 = digitalRead(5);
+		if (buttonState4 == HIGH) {
+			if(BTN>0) {
+				BTN--;
+			}
+		} else if (buttonState5 == HIGH) {
+			if(BTN<255){
+				BTN++;
+			}
+		}
+	}
 	//calculates the number of cells of the board if not allready happen
 	//needs to be in the loop because it is not clear when board is powered uo
 	if (calculatedValues.numberCellsVesc == 0)
@@ -235,13 +259,16 @@ void loop()
 #endif // STATUS_LED_USED
 
 	//read iputs
-#ifdef SEND_LR	
+#ifdef SEND_LR
 	remPack.valXJoy = map(analogRead(JOY_X), 0, 1023, 0, 255);
 #else //if Joystick information of Y is not used for remote it can be used in remote
 	remPack.valXJoy = 127;
 	leftright = analogRead(JOY_X);
 #endif // END_LR
 	remPack.valYJoy = map(analogRead(JOY_Y), 0, 1023, 0, 255);
+	if (useBTN) {
+		remPack.valYJoy = BTN;
+	}
 	remPack.valLowerButton = !digitalRead(LOWER_BUTTON);
 	remPack.valUpperButton = !digitalRead(UPPER_BUTTON);
 	//send data via radio to RX
