@@ -199,17 +199,21 @@ pinMode(5, INPUT);//speed
 void loop()
 {
 	//cal speed if using buttons
-	if (useBTN)
+	if (useBTN==true)
 	{
 		buttonState4 = digitalRead(4);
 		buttonState5 = digitalRead(5);
 		if (buttonState4 == HIGH) {
 			if(BTN>0) {
 				BTN--;
+			} else {
+				BTN=0;
 			}
 		} else if (buttonState5 == HIGH) {
 			if(BTN<255){
 				BTN++;
+			} else {
+				BTN=255;
 			}
 		}
 	}
@@ -267,6 +271,7 @@ void loop()
 #endif // END_LR
 	remPack.valYJoy = map(analogRead(JOY_Y), 0, 1023, 0, 255);
 	if (useBTN) {
+		remPack.valXJoy=BTN;
 		remPack.valYJoy = BTN;
 	}
 	remPack.valLowerButton = !digitalRead(LOWER_BUTTON);
